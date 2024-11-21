@@ -1,6 +1,6 @@
 <?php
 include("../../functions.php");
-$Pagetitle = "Add Subject";
+$title = "Add Subject";
 include("../partials/header.php");
 include("../partials/side-bar.php");
 
