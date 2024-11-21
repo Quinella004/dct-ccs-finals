@@ -1,4 +1,5 @@
 <?php
+
 session_start(); // Start the session
 
 // Include necessary functions
