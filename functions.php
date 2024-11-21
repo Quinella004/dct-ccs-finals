@@ -79,5 +79,61 @@ function fetchSubjects(): array {
     $conn->close();
     return $subjects;
 }
+function generateValidStudentId($original_id) {
+    // Truncate to the first 4 characters
+    return substr($original_id, 0, 4);
+}
+function validateStudentData($student_data) {
+    $errors = [];
+    if (empty($student_data['student_id'])) {
+        $errors[] = "Student ID is required.";
+    }
+    if (empty($student_data['first_name'])) {
+        $errors[] = "First Name is required.";
+    }
+    if (empty($student_data['last_name'])) {
+        $errors[] = "Last Name is required.";
+    }
+
+    // Removed the var_dump debug
+    return $errors;
+}
+function checkDuplicateStudentData($student_data) {
+    $connection = connectDatabase();
+    $query = "SELECT * FROM students WHERE student_id = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param('s', $student_data['student_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        return "Student ID already exists.";
+    }
+
+    // Removed the var_dump debug
+    return '';
+}
+function generateUniqueIdForStudents() {
+    $connection = connectDatabase();
+
+    // Find the maximum current ID and add 1 to it
+    $query = "SELECT MAX(id) AS max_id FROM students";
+    $result = $connection->query($query);
+    $row = $result->fetch_assoc();
+    $max_id = $row['max_id'];
+
+    $connection->close();
+
+    return $max_id + 1; // Generate the next unique ID
+}
+function renderAlert($messages, $type = 'danger') {
+    if (empty($messages)) {
+        return '';
+    }
+    // Ensure messages is an array
+    if (!is_array($messages)) {
+        $messages = [$messages];
+    }
+}
     // All project functions should be placed here
 ?>
