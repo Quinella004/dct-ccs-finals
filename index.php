@@ -1,3 +1,51 @@
+<?php
+session_start(); // Start the session
+
+// Include necessary functions
+require_once 'functions.php'; // Database and reusable functions
+
+// Initialize variables
+$email = '';
+$password = '';
+$errors = [];
+$result = null;
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    // Sanitize input data
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+
+    // Validate input fields
+    if (empty($email)) {
+        $errors[] = "Email Address is required!";
+    }
+    if (empty($password)) {
+        $errors[] = "Password is required!";
+    }
+
+    if (empty($errors)) {
+        // Call the login function
+        $result = loginUser($email, $password);
+
+        if ($result['success']) {
+            // Successful login
+            $_SESSION['loggedin'] = true;
+            $_SESSION['user'] = $result['user']; // Store user info in session
+            header("Location: admin/dashboard.php");
+            exit();
+        } else {
+            // Handle errors returned by the login function
+            if (!empty($result['errors'])) {
+                $errors = array_merge($errors, $result['errors']);
+            } else {
+                $errors[] = "An unknown error occurred. Please try again.";
+            }
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,6 +60,18 @@
     <div class="d-flex align-items-center justify-content-center vh-100">
         <div class="col-3">
             <!-- Server-Side Validation Messages should be placed here -->
+            <?php if (!empty($errors)) : ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>System Errors:</strong> Please correct the following errors:
+                    <hr>
+                    <ul>
+                        <?php foreach ($errors as $error) : ?>
+                            <li><?= htmlspecialchars($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
             <div class="card">
                 <div class="card-body">
                     <h1 class="h3 mb-4 fw-normal">Login</h1>
