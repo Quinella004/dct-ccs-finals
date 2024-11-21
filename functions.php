@@ -149,5 +149,13 @@ function getSelectedStudentData($student_id) {
 
     return $student;
 }
+function logout_user() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start(); // Start the session if not already started
+    }
+    session_destroy(); // Destroy the session
+    header("Location:../index.php"); // Redirect to root login page
+    exit();
+}
     // All project functions should be placed here
 ?>
