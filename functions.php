@@ -135,5 +135,19 @@ function renderAlert($messages, $type = 'danger') {
         $messages = [$messages];
     }
 }
+function getSelectedStudentData($student_id) {
+    $connection = connectDatabase();
+    $query = "SELECT * FROM students WHERE id = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param('i', $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $student = $result->fetch_assoc();
+
+    $stmt->close();
+    $connection->close();
+
+    return $student;
+}
     // All project functions should be placed here
 ?>
