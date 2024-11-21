@@ -72,6 +72,12 @@ function loginUser(string $email, string $password): array {
         return ['success' => false, 'errors' => ['query' => 'Failed to prepare the query.']];
     }
 }
-
+function fetchSubjects(): array {
+    $conn = connectDatabase();
+    $result = $conn->query("SELECT * FROM subjects ORDER BY id ASC");
+    $subjects = $result->fetch_all(MYSQLI_ASSOC);
+    $conn->close();
+    return $subjects;
+}
     // All project functions should be placed here
 ?>
