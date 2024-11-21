@@ -9,7 +9,7 @@ require_once '../../functions.php';
 require_once '../partials/header.php';
 require_once '../partials/side-bar.php';
 
-guard(); // Ensure user is authenticated
+
 
 // Initialize variables
 $error_message = '';
@@ -24,7 +24,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 $subject_id = intval($_GET['id']);
 
 // Fetch the subject details for editing
-$connection = db_connect();
+$connection = connectDatabase();
 $query = "SELECT * FROM subjects WHERE id = ?";
 $stmt = $connection->prepare($query);
 $stmt->bind_param('i', $subject_id);
